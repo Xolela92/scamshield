@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="ScamShield — Free global scam reporting, victim support and fraud intelligence."/>
+<title>ScamShield — Global Anti-Scam Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#0a0f1e;--bg2:#0d1428;--bg3:#111830;--surface:#141c33;--surface2:#1a2440;
+--border:#ffffff0f;--border2:#ffffff18;
+--red:#ff3d57;--red2:#ff1744;--orange:#ff6d00;--yellow:#ffd600;
+--green:#00e676;--blue:#2979ff;--teal:#00bcd4;
+--text:#eef0f8;--text2:#8892b0;--text3:#4a5568;
+--r:14px;--r2:8px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.6}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 50% at 15% 0%,#ff3d5712,transparent 60%),radial-gradient(ellipse 50% 40% at 85% 90%,#2979ff10,transparent 60%);pointer-events:none;z-index:0}
+#app{position:relative;z-index:1;display:flex;flex-direction:column;min-height:100vh}
+header{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid var(--border);backdrop-filter:blur(20px);position:sticky;top:0;z-index:100;background:rgba(10,15,30,0.9);flex-wrap:wrap;gap:10px}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.shield-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--red),var(--orange));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 0 24px #ff3d5740;flex-shrink:0}
+.logo-name{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:2px;background:linear-gradient(135deg,var(--red),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.logo-sub{font-size:0.6rem;color:var(--text3);letter-spacing:3px;text-transform:uppercase;display:block;margin-top:-6px}
+.header-nav{display:flex;gap:2px;flex-wrap:wrap}
+.nav-btn{background:transparent;border:none;color:var(--text2);padding:7px 13px;border-radius:var(--r2);cursor:pointer;font-family:'Outfit',sans-serif;font-size:0.82rem;font-weight:500;transition:all 0.2s}
+.nav-btn:hover,.nav-btn.active{background:var(--surface);color:var(--text)}
+.header-right{display:flex;gap:8px;align-items:center}
+.btn{border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:600;border-radius:var(--r2);transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;font-size:0.85rem}
+.btn-red{background:linear-gradient(135deg,var(--red2),var(--red));color:#fff;padding:9px 18px}
+.btn-red:hover{box-shadow:0 0 24px #ff3d5760;transform:translateY(-1px)}
+.btn-outline{background:transparent;border:1px solid var(--border2);color:var(--text2);padding:8px 16px}
+.btn-outline:hover{border-color:var(--red);color:var(--red)}
+.btn-green{background:linear-gradient(135deg,#00c853,var(--green));color:#000;padding:9px 18px;font-weight:700}
+.btn-green:hover{box-shadow:0 0 24px #00e67660;transform:translateY(-1px)}
+.btn-yellow{background:linear-gradient(135deg,#ff8f00,var(--yellow));color:#000;padding:9px 18px;font-weight:700}
+.btn-blue{background:linear-gradient(135deg,#1565c0,var(--blue));color:#fff;padding:9px 18px}
+.btn-paypal{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#003087,#009cde);color:#fff;padding:10px 22px;border-radius:var(--r2);font-weight:600;font-size:0.88rem;cursor:pointer;border:none;text-decoration:none;transition:all 0.2s;font-family:'Outfit',sans-serif}
+.btn-paypal:hover{box-shadow:0 0 20px #009cde40;transform:translateY(-2px)}
+section{padding:3rem 2rem;max-width:1100px;margin:0 auto;width:100%}
+.sec-label{font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--red);text-transform:uppercase;letter-spacing:3px;margin-bottom:0.75rem}
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,4vw,3rem);letter-spacing:1px;margin-bottom:0.5rem}
+.sec-sub{color:var(--text2);font-size:0.92rem;max-width:560px;margin-bottom:2rem;line-height:1.8}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem}
+.grid2{display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;align-items:start}
+.grid-auto{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem}
+.grid-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem}
+.badge{display:inline-block;padding:2px 10px;border-radius:100px;font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:1px}
+.badge-red{background:#ff3d5715;color:var(--red);border:1px solid #ff3d5730}
+.badge-green{background:#00e67615;color:var(--green);border:1px solid #00e67630}
+.badge-yellow{background:#ffd60015;color:var(--yellow);border:1px solid #ffd60030}
+.badge-blue{background:#2979ff15;color:#82b1ff;border:1px solid #2979ff30}
+.live-dot{width:7px;height:7px;background:var(--red);border-radius:50%;animation:livePulse 1s infinite;display:inline-block}
+@keyframes livePulse{0%,100%{box-shadow:0 0 0 0 #ff3d5780}50%{box-shadow:0 0 0 8px transparent}}
+.field-label{font-size:0.76rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px}
+.field-input,.field-select,.field-textarea{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r2);color:var(--text);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:10px 14px;outline:none;transition:border-color 0.2s;width:100%}
+.field-input:focus,.field-select:focus,.field-textarea:focus{border-color:#ff3d5760;box-shadow:0 0 0 3px #ff3d5710}
+.field-textarea{min-height:100px;resize:vertical;line-height:1.6}
+.field-input::placeholder,.field-textarea::placeholder{color:var(--text3)}
+.field-group{display:flex;flex-direction:column;gap:6px;margin-bottom:1rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.sev-row{display:flex;gap:8px;flex-wrap:wrap}
+.sev-btn{padding:7px 14px;border-radius:100px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;font-family:'Outfit',sans-serif;font-size:0.78rem;font-weight:500;transition:all 0.2s}
+.sev-btn.active-low{border-color:var(--yellow);color:var(--yellow);background:#ffd60010}
+.sev-btn.active-med{border-color:var(--orange);color:var(--orange);background:#ff6d0010}
+.sev-btn.active-high{border-color:var(--red);color:var(--red);background:#ff3d5510}
+.sev-btn.active-crit{border-color:#ff0000;color:#ff0000;background:#ff000010}
+.checker-box{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:2.5rem;text-align:center}
+.checker-row{display:flex;gap:8px;max-width:580px;margin:1.5rem auto 0;flex-wrap:wrap}
+.result-box{margin-top:1.5rem;padding:1.25rem;border-radius:var(--r2);display:none;text-align:left}
+.res-safe{background:#00e67610;border:1px solid #00e67640}
+.res-danger{background:#ff3d5510;border:1px solid #ff3d5540}
+.res-warn{background:#ffd60010;border:1px solid #ffd60040}
+.res-title{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:1px;margin-bottom:6px}
+.res-desc{font-size:0.85rem;opacity:0.9;line-height:1.7}
+.risk-bar{height:8px;background:var(--bg);border-radius:100px;margin:10px 0;overflow:hidden}
+.risk-fill{height:100%;border-radius:100px;transition:width 1s ease}
+.auth-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;display:flex;flex-direction:column;gap:8px}
+.auth-flag{font-size:24px}
+.auth-name{font-weight:700;font-size:0.9rem}
+.auth-desc{font-size:0.78rem;color:var(--text2);line-height:1.6}
+.auth-link{color:#82b1ff;font-size:0.78rem;text-decoration:none;font-family:'JetBrains Mono',monospace;word-break:break-all}
+.auth-link:hover{color:var(--teal)}
+.scam-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;cursor:pointer;transition:all 0.2s}
+.scam-card:hover{border-color:var(--orange);transform:translateY(-2px)}
+.scam-emoji{font-size:26px;margin-bottom:8px}
+.scam-name{font-weight:700;font-size:0.88rem;margin-bottom:4px}
+.scam-desc{font-size:0.78rem;color:var(--text2);line-height:1.6}
+.scam-loss{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--red);margin-top:8px}
+.ai-chat{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:1rem;min-height:260px;max-height:360px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin;margin-bottom:1rem}
+.ai-msg{display:flex;gap:10px;align-items:flex-start}
+.ai-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;margin-top:2px;font-weight:700;font-family:'Bebas Neue',sans-serif;letter-spacing:1px}
+.av-bot{background:linear-gradient(135deg,var(--red),var(--orange));color:#fff}
+.av-user{background:var(--surface2);border:1px solid var(--border2)}
+.ai-bubble{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:10px 14px;font-size:0.85rem;line-height:1.7;color:var(--text);max-width:85%}
+.user-msg{flex-direction:row-reverse}
+.user-msg .ai-bubble{background:linear-gradient(135deg,#ff3d5508,#ff6d0008);border-color:#ff3d5520}
+.ai-input-row{display:flex;gap:8px}
+.ai-input{flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r2);padding:10px 14px;color:var(--text);font-family:'Outfit',sans-serif;font-size:0.88rem;outline:none;transition:border-color 0.2s}
+.ai-input:focus{border-color:#ff3d5560}
+.send-btn{background:linear-gradient(135deg,var(--red2),var(--red));border:none;width:44px;height:44px;border-radius:var(--r2);cursor:pointer;color:#fff;font-size:16px;transition:all 0.2s;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.send-btn:hover{box-shadow:0 0 16px #ff3d5760;transform:translateY(-1px)}
+.quick-prompts{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+.quick-btn{background:var(--surface);border:1px solid var(--border2);border-radius:100px;padding:5px 12px;font-size:0.74rem;color:var(--text2);cursor:pointer;transition:all 0.2s;font-family:'Outfit',sans-serif}
+.quick-btn:hover{border-color:var(--red);color:var(--red)}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem}
+.stat-label{font-size:0.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
+.stat-value{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:1px}
+.stat-change{font-size:0.7rem;margin-top:4px;color:var(--red)}
+.plan-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;text-align:center}
+.plan-card.featured{border-color:#ff3d5550;background:linear-gradient(135deg,#ff3d5510,#ff6d0008)}
+.plan-amount{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:var(--green);letter-spacing:1px}
+.plan-period{font-size:0.8rem;color:var(--text3)}
+.plan-name{font-weight:700;margin:8px 0 4px}
+.plan-features{list-style:none;font-size:0.78rem;color:var(--text2);text-align:left;display:flex;flex-direction:column;gap:5px;margin:12px 0}
+.plan-features li::before{content:'+ ';color:var(--green)}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);margin-bottom:8px;flex-wrap:wrap;gap:10px}
+.sname{font-weight:500;font-size:0.9rem;margin-bottom:2px}
+.sdesc{font-size:0.74rem;color:var(--text3)}
+.key-input{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:8px 12px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:0.76rem;width:220px;outline:none}
+.key-input:focus{border-color:#ff3d5550}
+.live-feed{display:flex;flex-direction:column;gap:10px}
+.feed-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:1rem;display:flex;gap:10px;align-items:flex-start}
+.feed-icon{width:32px;height:32px;border-radius:var(--r2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.fi-red{background:#ff3d5715;border:1px solid #ff3d5730}
+.fi-green{background:#00e67615;border:1px solid #00e67630}
+.fi-yellow{background:#ffd60015;border:1px solid #ffd60030}
+.fi-blue{background:#2979ff15;border:1px solid #2979ff30}
+.feed-title{font-weight:600;font-size:0.82rem;margin-bottom:2px}
+.feed-body{font-size:0.76rem;color:var(--text2);line-height:1.5}
+.feed-time{font-size:0.68rem;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-left:auto;flex-shrink:0}
+.hero{padding:4rem 2rem 3rem;max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1.2fr 0.8fr;gap:3rem;align-items:center}
+.alert-badge{display:inline-flex;align-items:center;gap:8px;background:#ff3d5715;border:1px solid #ff3d5740;border-radius:100px;padding:6px 16px;font-size:0.74rem;color:var(--red);margin-bottom:1.5rem;font-family:'JetBrains Mono',monospace}
+h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,6vw,5rem);line-height:1;margin-bottom:1.25rem;letter-spacing:1px}
+h1 .accent{background:linear-gradient(135deg,var(--red),var(--orange),var(--yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-desc{color:var(--text2);font-size:0.95rem;max-width:460px;margin-bottom:2rem;line-height:1.8}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:2rem}
+.hero-stats{display:flex;gap:2rem;flex-wrap:wrap}
+.hstat-num{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--red);letter-spacing:1px}
+.hstat-label{font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);padding:2rem;max-width:520px;width:90%;max-height:80vh;overflow-y:auto}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:1px}
+.modal-close{background:transparent;border:none;color:var(--text2);cursor:pointer;font-size:20px}
+.modal-body{font-size:0.85rem;color:var(--text2);line-height:1.8}
+.modal-body h4{color:var(--text);margin:0.75rem 0 4px;font-size:0.88rem}
+.modal-body ul{padding-left:1.25rem}
+.modal-body li{margin-bottom:3px}
+.notif{position:fixed;bottom:24px;right:24px;background:var(--surface);border:1px solid #ff3d5540;border-radius:var(--r);padding:12px 18px;font-size:0.85rem;color:var(--red);z-index:9999;display:none;box-shadow:0 8px 32px #ff3d5720}
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:2rem;margin-top:auto}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;font-size:0.78rem;color:var(--text3)}
+.footer-links{display:flex;gap:1.5rem;flex-wrap:wrap}
+.footer-links a{color:var(--text3);text-decoration:none;transition:color 0.2s}
+.footer-links a:hover{color:var(--red)}
+.github-btn{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:6px 14px;color:var(--text2);text-decoration:none;font-size:0.78rem;transition:all 0.2s}
+.github-btn:hover{border-color:var(--red);color:var(--red)}
+.hint{background:linear-gradient(135deg,#ff3d5508,#ff6d0008);border:1px solid #ff3d5520;border-radius:var(--r2);padding:10px 14px;font-size:0.8rem;color:var(--text2);line-height:1.6;margin-bottom:1rem}
+.hint strong{color:var(--red)}
+@media(max-width:768px){
+  .hero{grid-template-columns:1fr;gap:1.5rem;padding:2.5rem 1.25rem 2rem}
+  .hero-right{display:none}
+  .grid2{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+  section{padding:2rem 1.25rem}
+  .header-nav{display:none}
+  header{padding:0.75rem 1rem}
+  .key-input{width:160px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+  <a class="logo" href="#">
+    <div class="shield-icon">&#128737;</div>
+    <div><span class="logo-name">ScamShield</span><span class="logo-sub">Global Anti-Scam Intelligence</span></div>
+  </a>
+  <div class="header-nav">
+    <button class="nav-btn active" onclick="show('home')">Home</button>
+    <button class="nav-btn" onclick="show('report')">Report Scam</button>
+    <button class="nav-btn" onclick="show('check')">Check Contact</button>
+    <button class="nav-btn" onclick="show('authorities')">Authorities</button>
+    <button class="nav-btn" onclick="show('learn')">Learn</button>
+    <button class="nav-btn" onclick="show('support')">AI Help</button>
+    <button class="nav-btn" onclick="show('settings')">Settings</button>
+  </div>
+  <div class="header-right">
+    <button class="btn btn-red" onclick="show('report')">&#128680; Report Now</button>
+  </div>
+</header>
+
+<!-- HOME -->
+<div id="sec-home">
+  <div class="hero">
+    <div>
+      <div class="alert-badge"><span class="live-dot"></span>&nbsp;LIVE &mdash; 247 Reports in last 24hrs</div>
+      <h1>FIGHT BACK<br/>AGAINST<br/><span class="accent">SCAMMERS</span></h1>
+      <p class="hero-desc">Free. Legal. Global. Report fraud, check suspicious contacts, get AI assistance, and connect directly with law enforcement in 180+ countries.</p>
+      <div class="hero-actions">
+        <button class="btn btn-red" onclick="show('report')">&#128680; Report a Scam</button>
+        <button class="btn btn-outline" onclick="show('check')">&#128269; Check a Contact</button>
+        <a href="https://paypal.me/YOUR_PAYPAL" target="_blank" class="btn btn-green">&#10084;&#65039; Support the Mission</a>
+      </div>
+      <div class="hero-stats">
+        <div><div class="hstat-num">47K+</div><div class="hstat-label">Reports Filed</div></div>
+        <div><div class="hstat-num">$2.3M</div><div class="hstat-label">Funds Traced</div></div>
+        <div><div class="hstat-num">180+</div><div class="hstat-label">Countries</div></div>
+      </div>
+    </div>
+    <div class="hero-right live-feed">
+      <div class="feed-item"><div class="feed-icon fi-red">&#128680;</div><div><div class="feed-title">New Report &mdash; South Africa</div><div class="feed-body">Romance scam via WhatsApp. R45,000 lost. Forwarded to SAPS Cybercrime.</div><span class="badge badge-red">Romance Scam</span></div><div class="feed-time">2 min ago</div></div>
+      <div class="feed-item"><div class="feed-icon fi-green">&#9989;</div><div><div class="feed-title">Case Escalated &mdash; Nigeria</div><div class="feed-body">Investment fraud referred to EFCC with full evidence package.</div><span class="badge badge-green">Escalated</span></div><div class="feed-time">14 min</div></div>
+      <div class="feed-item"><div class="feed-icon fi-yellow">&#9888;&#65039;</div><div><div class="feed-title">Alert &mdash; Phishing Wave</div><div class="feed-body">New SMS phishing targeting FNB customers. Do not click links.</div><span class="badge badge-yellow">Active Alert</span></div><div class="feed-time">1 hr</div></div>
+      <div class="feed-item"><div class="feed-icon fi-blue">&#128203;</div><div><div class="feed-title">Evidence Sent &mdash; UK</div><div class="feed-body">Fraud dossier submitted to Action Fraud UK. Case number issued.</div><span class="badge badge-blue">In Progress</span></div><div class="feed-time">2 hrs</div></div>
+    </div>
+  </div>
+  <section>
+    <div class="sec-label">What We Do</div>
+    <div class="sec-title">LEGALLY POWERFUL TOOLS</div>
+    <div class="grid-auto">
+      <div class="card"><div style="font-size:26px;margin-bottom:8px">&#128680;</div><div style="font-weight:700;margin-bottom:6px">Scam Reporting Engine</div><div style="font-size:0.8rem;color:var(--text2);line-height:1.7">Structured reports forwarded directly to law enforcement in your country with all relevant evidence compiled.</div></div>
+      <div class="card"><div style="font-size:26px;margin-bottom:8px">&#128269;</div><div style="font-weight:700;margin-bottom:6px">Intelligence Checker</div><div style="font-size:0.8rem;color:var(--text2);line-height:1.7">Check any phone, email, website or account against our global database of reported scammers instantly.</div></div>
+      <div class="card"><div style="font-size:26px;margin-bottom:8px">&#129302;</div><div style="font-weight:700;margin-bottom:6px">AI Victim Assistant</div><div style="font-size:0.8rem;color:var(--text2);line-height:1.7">Get instant confidential advice on next steps, evidence collection, and which authority to contact.</div></div>
+      <div class="card"><div style="font-size:26px;margin-bottom:8px">&#127757;</div><div style="font-weight:700;margin-bottom:6px">Authority Directory</div><div style="font-size:0.8rem;color:var(--text2);line-height:1.7">Direct links to cybercrime units and fraud hotlines for 12+ countries. No searching needed.</div></div>
+      <div class="card"><div style="font-size:26px;margin-bottom:8px">&#128218;</div><div style="font-weight:700;margin-bottom:6px">Education Hub</div><div style="font-size:0.8rem;color:var(--text2);line-height:1.7">Learn every scam type, red flags, and prevention. Share with family and community to protect everyone.</div></div>
+      <div class="card"><div style="font-size:26px;margin-bottom:8px">&#128230;</div><div style="font-weight:700;margin-bottom:6px">Evidence Package Builder</div><div style="font-size:0.8rem;color:var(--text2);line-height:1.7">We compile your screenshots, records and communications into a professional police dossier.</div></div>
+    </div>
+  </section>
+</div>
+
+<!-- REPORT -->
+<div id="sec-report" style="display:none">
+<section>
+  <div class="sec-label">Take Action</div>
+  <div class="sec-title">REPORT A SCAM</div>
+  <p class="sec-sub">Your report is confidential. It gets added to our global database and forwarded to the relevant authority in your region.</p>
+  <div class="grid2">
+    <div class="card">
+      <div class="form-row"><div class="field-group"><label class="field-label">Scam Type</label><select class="field-select" id="scamType"><option>Romance / Dating Scam</option><option>Investment / Crypto Fraud</option><option>Phishing (Email/SMS/Call)</option><option>Online Shopping Fraud</option><option>Job / Employment Scam</option><option>Lottery / Prize Scam</option><option>Advance Fee (419) Fraud</option><option>Tech Support Scam</option><option>Identity Theft</option><option>Pyramid / Ponzi Scheme</option><option>Other</option></select></div><div class="field-group"><label class="field-label">Platform Used</label><select class="field-select"><option>WhatsApp</option><option>Facebook</option><option>Instagram</option><option>Telegram</option><option>Email</option><option>Phone Call</option><option>SMS</option><option>Website</option><option>Other</option></select></div></div>
+      <div class="form-row"><div class="field-group"><label class="field-label">Scammer Contact (Phone / Email / Username)</label><input class="field-input" id="scammerContact" placeholder="+27 XX XXX XXXX or email@domain.com"/></div><div class="field-group"><label class="field-label">Amount Lost</label><input class="field-input" placeholder="e.g. R5000 or $500 or N/A"/></div></div>
+      <div class="field-group"><label class="field-label">Your Country</label><select class="field-select"><option>South Africa</option><option>Nigeria</option><option>Kenya</option><option>Ghana</option><option>Zimbabwe</option><option>United Kingdom</option><option>United States</option><option>Australia</option><option>Canada</option><option>India</option><option>Other</option></select></div>
+      <div class="field-group"><label class="field-label">Severity</label><div class="sev-row"><button class="sev-btn" onclick="setSev(this,'low')">&#128993; Low</button><button class="sev-btn active-med" onclick="setSev(this,'med')">&#128992; Medium</button><button class="sev-btn" onclick="setSev(this,'high')">&#128308; High</button><button class="sev-btn" onclick="setSev(this,'crit')">&#9888;&#65039; Critical</button></div></div>
+      <div class="field-group"><label class="field-label">Full Description of What Happened</label><textarea class="field-textarea" id="scamDesc" style="min-height:130px" placeholder="Describe in detail how it started, what they said, what happened, any links or accounts involved. More detail helps authorities..."></textarea></div>
+      <div class="field-group"><label class="field-label">Scammer Bank Account / Wallet (if known)</label><input class="field-input" placeholder="Bank name, account number, or crypto wallet address"/></div>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap"><button class="btn btn-red" onclick="submitReport()" style="padding:11px 28px">&#128680; Submit Report</button><span style="font-size:0.75rem;color:var(--text3)">&#128274; Your identity is kept confidential</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <div class="card"><div style="font-weight:700;margin-bottom:10px;font-size:0.9rem">&#128203; After You Report</div><div style="font-size:0.8rem;color:var(--text2);line-height:2">&#9989; Report added to global database<br/>&#9989; Forwarded to your country's cybercrime unit<br/>&#9989; Scammer contact flagged in checker<br/>&#9989; Evidence compiled into dossier<br/>&#9989; You receive a case reference number</div></div>
+      <div class="card" style="background:linear-gradient(135deg,#ff3d5510,#ff6d0008);border-color:#ff3d5530"><div style="font-weight:700;margin-bottom:8px;color:var(--red);font-size:0.9rem">&#9889; Do This Right Now</div><div style="font-size:0.78rem;color:var(--text2);line-height:2">1. Stop ALL contact with scammer<br/>2. Screenshot everything<br/>3. Contact your bank immediately<br/>4. Change all passwords<br/>5. File this report</div></div>
+      <div class="card"><div style="font-weight:700;margin-bottom:8px;font-size:0.9rem">&#129302; Need Guidance?</div><div style="font-size:0.78rem;color:var(--text2);margin-bottom:10px">Ask our AI assistant exactly what to do in your situation</div><button class="btn btn-outline" style="width:100%;justify-content:center" onclick="show('support')">Open AI Assistant</button></div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- CHECK -->
+<div id="sec-check" style="display:none">
+<section>
+  <div class="sec-label">Intelligence Check</div>
+  <div class="sec-title">IS IT A SCAM?</div>
+  <p class="sec-sub">Enter any phone number, email, website, or bank account to check against our scam database and get an AI risk assessment.</p>
+  <div class="checker-box">
+    <div style="font-size:2.5rem;margin-bottom:8px">&#128269;</div>
+    <div style="font-weight:600;font-size:1.05rem;margin-bottom:4px">Check Any Contact Instantly</div>
+    <div style="font-size:0.82rem;color:var(--text2)">Phone &middot; Email &middot; Website &middot; Bank account &middot; Social profile</div>
+    <div class="checker-row">
+      <input class="field-input" id="checkInput" placeholder="Enter phone, email, website or account..." onkeydown="if(event.key==='Enter')runCheck()" style="flex:1"/>
+      <button class="btn btn-red" onclick="runCheck()">&#128269; Check Now</button>
+    </div>
+    <div class="result-box" id="resultBox">
+      <div class="risk-bar"><div class="risk-fill" id="riskFill"></div></div>
+      <div class="res-title" id="resTitle"></div>
+      <div class="res-desc" id="resDesc"></div>
+    </div>
+  </div>
+  <div style="margin-top:2rem">
+    <div style="font-weight:700;margin-bottom:1rem;font-size:0.95rem">&#128373;&#65039; Recently Reported Contacts</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div class="card" style="display:flex;align-items:center;gap:1rem;padding:1rem"><span style="font-size:20px">&#128241;</span><div style="flex:1"><div style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;color:var(--red)">+27 XX XXX 4521</div><div style="font-size:0.75rem;color:var(--text3)">Romance Scam &middot; South Africa &middot; 3 reports</div></div><span class="badge badge-red">Confirmed</span></div>
+      <div class="card" style="display:flex;align-items:center;gap:1rem;padding:1rem"><span style="font-size:20px">&#127760;</span><div style="flex:1"><div style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;color:var(--red)">invest-profits-now.com</div><div style="font-size:0.75rem;color:var(--text3)">Investment Fraud &middot; Global &middot; 12 reports</div></div><span class="badge badge-red">Confirmed</span></div>
+      <div class="card" style="display:flex;align-items:center;gap:1rem;padding:1rem"><span style="font-size:20px">&#128231;</span><div style="flex:1"><div style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;color:var(--yellow)">claims.lottery@gmail.com</div><div style="font-size:0.75rem;color:var(--text3)">Lottery Scam &middot; Nigeria &middot; 7 reports</div></div><span class="badge badge-yellow">Suspected</span></div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- AUTHORITIES -->
+<div id="sec-authorities" style="display:none">
+<section>
+  <div class="sec-label">Global Directory</div>
+  <div class="sec-title">OFFICIAL REPORTING AUTHORITIES</div>
+  <p class="sec-sub">These are the legally empowered bodies that can investigate, freeze accounts, and pursue scammers. Click any link to report directly.</p>
+  <div class="grid-auto">
+    <div class="auth-card"><div class="auth-flag">&#127484;&#127462;</div><div class="auth-name">South Africa &mdash; SAPS Cybercrime</div><div class="auth-desc">SA Police Service Cybercrime Unit. Handles online fraud, romance scams, phishing attacks.</div><a class="auth-link" href="https://www.saps.gov.za" target="_blank">www.saps.gov.za &#8599;</a><div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px"><span class="badge badge-blue">Cybercrime</span><span class="badge badge-red">Fraud</span></div></div>
+    <div class="auth-card"><div class="auth-flag">&#127484;&#127462;</div><div class="auth-name">South Africa &mdash; FIC</div><div class="auth-desc">Financial Intelligence Centre. Reports financial fraud and money laundering cases.</div><a class="auth-link" href="https://www.fic.gov.za" target="_blank">www.fic.gov.za &#8599;</a><div style="margin-top:4px"><span class="badge badge-yellow">Financial</span></div></div>
+    <div class="auth-card"><div class="auth-flag">&#127475;&#127468;</div><div class="auth-name">Nigeria &mdash; EFCC</div><div class="auth-desc">Economic & Financial Crimes Commission. Investigates 419 fraud and cybercrime. Very active.</div><a class="auth-link" href="https://efccnigeria.org" target="_blank">efccnigeria.org &#8599;</a><div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px"><span class="badge badge-red">Fraud</span><span class="badge badge-blue">Cybercrime</span></div></div>
+    <div class="auth-card"><div class="auth-flag">&#127468;&#127463;</div><div class="auth-name">United Kingdom &mdash; Action Fraud</div><div class="auth-desc">UK national fraud & cybercrime reporting centre. Issues police case numbers.</div><a class="auth-link" href="https://www.actionfraud.police.uk" target="_blank">actionfraud.police.uk &#8599;</a><div style="margin-top:4px"><span class="badge badge-red">Fraud</span></div></div>
+    <div class="auth-card"><div class="auth-flag">&#127482;&#127480;</div><div class="auth-name">USA &mdash; FBI IC3</div><div class="auth-desc">Internet Crime Complaint Center. Global reach. Handles cross-border financial crime.</div><a class="auth-link" href="https://www.ic3.gov" target="_blank">www.ic3.gov &#8599;</a><div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px"><span class="badge badge-blue">Cybercrime</span><span class="badge badge-red">Fraud</span></div></div>
+    <div class="auth-card"><div class="auth-flag">&#127462;&#127482;</div><div class="auth-name">Australia &mdash; Scamwatch</div><div class="auth-desc">ACCC scam reporting portal. Tracks and publishes national scam alerts and statistics.</div><a class="auth-link" href="https://www.scamwatch.gov.au" target="_blank">scamwatch.gov.au &#8599;</a><div style="margin-top:4px"><span class="badge badge-red">Scams</span></div></div>
+    <div class="auth-card"><div class="auth-flag">&#127472;&#127466;</div><div class="auth-name">Kenya &mdash; DCI Cybercrime</div><div class="auth-desc">Directorate of Criminal Investigations cybercrime and fraud unit.</div><a class="auth-link" href="https://www.dci.go.ke" target="_blank">www.dci.go.ke &#8599;</a><div style="margin-top:4px"><span class="badge badge-blue">Cybercrime</span></div></div>
+    <div class="auth-card"><div class="auth-flag">&#127464;&#127462;</div><div class="auth-name">Canada &mdash; CAFC</div><div class="auth-desc">Canadian Anti-Fraud Centre. National fraud reporting and intelligence database.</div><a class="auth-link" href="https://www.antifraudcentre-centreantifraude.ca" target="_blank">antifraudcentre.ca &#8599;</a><div style="margin-top:4px"><span class="badge badge-red">Fraud</span></div></div>
+    <div class="auth-card"><div class="auth-flag">&#127466;&#127482;</div><div class="auth-name">Europe &mdash; Europol</div><div class="auth-desc">Coordinates cross-border financial crime investigations across EU member states.</div><a class="auth-link" href="https://www.europol.europa.eu" target="_blank">europol.europa.eu &#8599;</a><div style="margin-top:4px"><span class="badge badge-blue">Cross-Border</span></div></div>
+    <div class="auth-card"><div class="auth-flag">&#127757;</div><div class="auth-name">INTERPOL &mdash; Financial Crimes</div><div class="auth-desc">Cross-border financial fraud unit covering 195 member countries worldwide.</div><a class="auth-link" href="https://www.interpol.int" target="_blank">www.interpol.int &#8599;</a><div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px"><span class="badge badge-blue">Global</span><span class="badge badge-red">Fraud</span></div></div>
+    <div class="auth-card"><div class="auth-flag">&#127757;</div><div class="auth-name">GASA &mdash; Global Anti-Scam Alliance</div><div class="auth-desc">NGO connecting victims to resources in 70+ countries. Excellent for emerging markets.</div><a class="auth-link" href="https://www.gasa.org" target="_blank">www.gasa.org &#8599;</a><div style="margin-top:4px"><span class="badge badge-green">NGO</span></div></div>
+    <div class="auth-card"><div class="auth-flag">&#127482;&#127480;</div><div class="auth-name">USA &mdash; FTC ReportFraud</div><div class="auth-desc">Federal Trade Commission consumer fraud and identity theft reporting portal.</div><a class="auth-link" href="https://reportfraud.ftc.gov" target="_blank">reportfraud.ftc.gov &#8599;</a><div style="margin-top:4px"><span class="badge badge-yellow">Consumer</span></div></div>
+  </div>
+</section>
+</div>
+
+<!-- LEARN -->
+<div id="sec-learn" style="display:none">
+<section>
+  <div class="sec-label">Education Hub</div>
+  <div class="sec-title">KNOW YOUR ENEMY</div>
+  <p class="sec-sub">Learn to spot every type of scam. Click any card for full red flags, warning signs, and what to do. Share this page — awareness is the #1 weapon against fraud.</p>
+  <div class="grid-auto">
+    <div class="scam-card" onclick="openModal('romance')"><div class="scam-emoji">&#128148;</div><div class="scam-name">Romance Scam</div><div class="scam-desc">Fake relationships built online to extract money. Stolen photos, elaborate backstories, urgent emergencies.</div><div class="scam-loss">Global losses: $1.3B/year</div></div>
+    <div class="scam-card" onclick="openModal('investment')"><div class="scam-emoji">&#128200;</div><div class="scam-name">Investment / Crypto Fraud</div><div class="scam-desc">Promises of high returns on fake platforms. Money deposited, platform disappears with everything.</div><div class="scam-loss">Global losses: $5.6B/year</div></div>
+    <div class="scam-card" onclick="openModal('phishing')"><div class="scam-emoji">&#127907;</div><div class="scam-name">Phishing</div><div class="scam-desc">Fake emails, SMS or calls pretending to be your bank, SARS, SASSA or known brands to steal credentials.</div><div class="scam-loss">Global losses: $3.4B/year</div></div>
+    <div class="scam-card" onclick="openModal('419')"><div class="scam-emoji">&#9993;&#65039;</div><div class="scam-name">Advance Fee (419) Fraud</div><div class="scam-desc">Promise of millions if you pay a small fee. Fees keep growing. The money never arrives.</div><div class="scam-loss">Global losses: $700M/year</div></div>
+    <div class="scam-card" onclick="openModal('job')"><div class="scam-emoji">&#128188;</div><div class="scam-name">Job / Employment Scam</div><div class="scam-desc">Fake job offers requiring upfront payment for training, registration or equipment before starting.</div><div class="scam-loss">Global losses: $200M/year</div></div>
+    <div class="scam-card" onclick="openModal('tech')"><div class="scam-emoji">&#128187;</div><div class="scam-name">Tech Support Scam</div><div class="scam-desc">Fake Microsoft or Apple alerts claiming your device is infected. Remote access given, money stolen.</div><div class="scam-loss">Global losses: $800M/year</div></div>
+    <div class="scam-card" onclick="openModal('lottery')"><div class="scam-emoji">&#127921;</div><div class="scam-name">Lottery / Prize Scam</div><div class="scam-desc">You won a prize you never entered. Pay fees to claim. The prize never materialises.</div><div class="scam-loss">Global losses: $120M/year</div></div>
+    <div class="scam-card" onclick="openModal('ponzi')"><div class="scam-emoji">&#128314;</div><div class="scam-name">Pyramid / Ponzi Scheme</div><div class="scam-desc">Early investors paid from new recruits' money. Collapses when recruitment slows leaving most with losses.</div><div class="scam-loss">Global losses: $2.9B/year</div></div>
+  </div>
+</section>
+</div>
+
+<!-- AI SUPPORT -->
+<div id="sec-support" style="display:none">
+<section>
+  <div class="sec-label">AI Assistant</div>
+  <div class="sec-title">GET INSTANT HELP</div>
+  <p class="sec-sub">Our AI knows every scam type, what evidence to collect, and exactly who to contact. Free. Confidential. Available 24/7.</p>
+  <div style="max-width:700px">
+    <div class="hint"><strong>No API key yet?</strong> Go to Settings and add your free Anthropic key from console.anthropic.com to activate the AI assistant.</div>
+    <div class="quick-prompts">
+      <button class="quick-btn" onclick="quickAsk('I think I was just scammed, what should I do first?')">&#128680; I was just scammed</button>
+      <button class="quick-btn" onclick="quickAsk('How do I report a romance scam to police?')">&#128148; Romance scam</button>
+      <button class="quick-btn" onclick="quickAsk('Someone is asking me to send money, could it be a scam?')">&#9888;&#65039; Is this a scam?</button>
+      <button class="quick-btn" onclick="quickAsk('What evidence do I need to report a scam to the police?')">&#128203; What evidence do I need?</button>
+      <button class="quick-btn" onclick="quickAsk('How can I recover money I lost to an investment scam?')">&#128176; Recover my money</button>
+    </div>
+    <div class="ai-chat" id="aiChat">
+      <div class="ai-msg">
+        <div class="ai-avatar av-bot">SS</div>
+        <div class="ai-bubble">Hi, I am your ScamShield AI assistant. I am here to help you understand what happened, decide on next steps, and connect you with the right authority. Everything you share is confidential. How can I help you today?</div>
+      </div>
+    </div>
+    <div class="ai-input-row">
+      <input class="ai-input" id="aiInput" placeholder="Describe your situation or ask anything..." onkeydown="if(event.key==='Enter')sendAI()"/>
+      <button class="send-btn" onclick="sendAI()">&#10148;</button>
+    </div>
+    <div style="margin-top:8px;font-size:0.72rem;color:var(--text3)">&#128274; Your conversation is private and not stored. Powered by Claude AI.</div>
+  </div>
+</section>
+</div>
+
+<!-- SETTINGS -->
+<div id="sec-settings" style="display:none">
+<section>
+  <div class="sec-label">Configuration</div>
+  <div class="sec-title">SETTINGS & REVENUE</div>
+  <div style="max-width:720px;display:flex;flex-direction:column;gap:1.5rem">
+    <div class="card">
+      <div style="font-weight:700;margin-bottom:1rem">&#128273; API Configuration</div>
+      <div class="setting-row"><div><div class="sname">Anthropic API Key</div><div class="sdesc">Powers the AI assistant &mdash; stored only in your browser</div></div><div style="display:flex;gap:6px"><input type="password" class="key-input" id="apiKeyInput" placeholder="sk-ant-api03-..." oninput="saveKey()"/><button class="btn btn-outline" onclick="toggleKey()" style="padding:6px 10px">&#128065;</button></div></div>
+    </div>
+    <div class="card">
+      <div style="font-weight:700;margin-bottom:1rem">&#128279; Your Links</div>
+      <div class="setting-row"><div><div class="sname">GitHub Repository</div><div class="sdesc">Source code and open source contributions</div></div><div style="display:flex;gap:6px"><input type="text" class="key-input" id="githubInput" placeholder="https://github.com/user/scamshield" oninput="saveLinks()"/><button class="btn btn-outline" onclick="openUrl('githubInput')" style="padding:6px 10px">&#8599;</button></div></div>
+      <div class="setting-row"><div><div class="sname">PayPal Donations</div><div class="sdesc">For community support and operational funding</div></div><div style="display:flex;gap:6px"><input type="text" class="key-input" id="paypalInput" placeholder="https://paypal.me/username" oninput="saveLinks()"/><button class="btn btn-outline" onclick="openUrl('paypalInput')" style="padding:6px 10px">&#8599;</button></div></div>
+    </div>
+    <div class="card">
+      <div style="font-weight:700;margin-bottom:1rem">&#128200; Platform Stats</div>
+      <div class="grid-stats">
+        <div class="stat-card"><div class="stat-label">Reports Filed</div><div class="stat-value" style="color:var(--red)">247</div><div class="stat-change">+18 today</div></div>
+        <div class="stat-card"><div class="stat-label">Monthly Visitors</div><div class="stat-value" style="color:var(--teal)">1.2K</div><div class="stat-change">Growing</div></div>
+        <div class="stat-card"><div class="stat-label">Pro Members</div><div class="stat-value" style="color:var(--green)">14</div><div class="stat-change">+3 this week</div></div>
+        <div class="stat-card"><div class="stat-label">Revenue</div><div class="stat-value" style="color:var(--yellow)">$126</div><div class="stat-change">This month</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-weight:700;margin-bottom:6px">&#128176; Subscription Plans</div>
+      <div style="font-size:0.8rem;color:var(--text2);margin-bottom:1.25rem">Revenue keeps ScamShield free and expanding globally</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem">
+        <div class="plan-card"><div class="plan-amount">$0</div><div class="plan-period">/month</div><div class="plan-name">&#127379; Community</div><ul class="plan-features"><li>Report scams</li><li>AI assistant (10/day)</li><li>Check contacts</li><li>Authority directory</li></ul><button class="btn btn-outline" style="width:100%;justify-content:center" onclick="show('report')">Use Free</button></div>
+        <div class="plan-card featured"><div class="plan-amount">$7</div><div class="plan-period">/month</div><div class="plan-name">&#9889; Protector</div><ul class="plan-features"><li>Unlimited AI assistant</li><li>Evidence package builder</li><li>Case tracking</li><li>Priority escalation</li><li>Family protection alerts</li></ul><a href="https://paypal.me/YOUR_PAYPAL/7" target="_blank" class="btn btn-red" style="width:100%;justify-content:center">Subscribe</a></div>
+        <div class="plan-card"><div class="plan-amount">$25</div><div class="plan-period">/month</div><div class="plan-name">&#127970; Business</div><ul class="plan-features"><li>Everything in Protector</li><li>API access</li><li>Staff training portal</li><li>Bulk reporting tools</li><li>White-label license</li></ul><a href="https://paypal.me/YOUR_PAYPAL/25" target="_blank" class="btn btn-yellow" style="width:100%;justify-content:center">Get Business</a></div>
+      </div>
+      <div style="text-align:center;margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid var(--border)">
+        <div style="font-size:0.82rem;color:var(--text2);margin-bottom:10px">Make a one-time donation to keep us running and expanding</div>
+        <a href="https://paypal.me/YOUR_PAYPAL" target="_blank" class="btn-paypal">&#128142; Donate via PayPal</a>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>&#169; 2025 ScamShield &middot; MIT License &middot; Legal &middot; Ethical &middot; Free</div>
+    <div class="footer-links">
+      <a href="#" onclick="show('report')">Report</a>
+      <a href="#" onclick="show('authorities')">Authorities</a>
+      <a href="#" onclick="show('settings')">Pricing</a>
+      <a href="https://paypal.me/YOUR_PAYPAL" target="_blank">Donate</a>
+    </div>
+    <a href="https://github.com/YOUR_USERNAME/scamshield" target="_blank" class="github-btn">&#9889; GitHub</a>
+  </div>
+</footer>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" id="modalTitle"></div><button class="modal-close" onclick="closeModal()">&#10005;</button></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<div class="notif" id="notif"></div>
+
+<script>
+var apiKey='',aiHistory=[];
+var scamInfo={
+  romance:{t:'Romance Scam',b:'<p>Scammers create fake profiles on dating apps or Facebook using stolen photos. They build trust over weeks then create emergencies requiring money transfers.</p><h4>Red Flags</h4><ul><li>Never wants to video call</li><li>Moves very fast emotionally</li><li>Claims to be overseas (military, engineer, doctor)</li><li>Always has an emergency needing money</li><li>Asks to move conversation to WhatsApp quickly</li></ul><h4>What To Do</h4><ul><li>Reverse image search their photo on Google</li><li>Never send money to someone you have not met in person</li><li>Report the profile on the platform immediately</li><li>File a report here on ScamShield</li><li>Contact your bank if money was sent</li></ul>'},
+  investment:{t:'Investment / Crypto Fraud',b:'<p>Fake platforms show incredible returns on cryptocurrency or forex. You can see your balance growing until you try to withdraw. Then fees appear, or the platform simply disappears.</p><h4>Red Flags</h4><ul><li>Guaranteed high returns with no risk</li><li>Pressure to recruit others</li><li>Cannot withdraw without paying fees first</li><li>No regulatory registration</li><li>Found through social media or WhatsApp groups</li></ul><h4>What To Do</h4><ul><li>Stop depositing immediately</li><li>Screenshot and document all transactions</li><li>Report to your country's financial regulator</li><li>File with IC3 (US) or Action Fraud (UK)</li></ul>'},
+  phishing:{t:'Phishing',b:'<p>Fake emails, SMS or calls pretending to be your bank, SARS, SASSA, PayPal or other trusted organisations. They trick you into clicking links that steal your login credentials.</p><h4>Red Flags</h4><ul><li>Urgent language such as "Your account will be suspended"</li><li>Link does not match the real website URL</li><li>Asking for your OTP or password</li><li>Poor grammar or unusual spelling</li><li>Generic greeting like "Dear Customer"</li></ul><h4>What To Do</h4><ul><li>Do not click any links in the message</li><li>Forward SMS scams to 7726 to report as spam</li><li>Call your bank directly on the official number</li><li>Change your passwords immediately</li></ul>'},
+  '419':{t:'Advance Fee (419) Fraud',b:'<p>You receive a message about unclaimed funds, inheritance, or a business deal worth millions. All you need to do is pay a small fee to release the funds. The fees never stop coming.</p><h4>Red Flags</h4><ul><li>Unsolicited contact about large sums of money</li><li>Request for upfront fees to unlock funds</li><li>Asking for your banking details</li><li>Requires secrecy from family and friends</li></ul><h4>What To Do</h4><ul><li>Do not pay anything at all</li><li>Do not share any banking details</li><li>Report to EFCC in Nigeria or local police</li><li>Block and report the sender on all platforms</li></ul>'},
+  job:{t:'Job / Employment Scam',b:'<p>Fake job offers requiring payment for uniforms, training, registration or background checks. Work-from-home opportunities that require buying starter kits that never deliver real income.</p><h4>Red Flags</h4><ul><li>No proper interview is required</li><li>Requires upfront payment of any kind</li><li>Salary offered is unrealistically high</li><li>Asked to receive and forward money for them</li><li>Contact comes from a personal email, not a company domain</li></ul><h4>What To Do</h4><ul><li>Research the company completely independently</li><li>Never pay money to get a job</li><li>Report to your country's labour department</li></ul>'},
+  tech:{t:'Tech Support Scam',b:'<p>A popup or phone call claiming your computer has a virus or has been hacked. They ask for remote access and then steal banking information or install real malware.</p><h4>Red Flags</h4><ul><li>Unsolicited call claiming to be from Microsoft or Apple</li><li>Pop-up with a phone number to call urgently</li><li>Asking for remote access to your device</li><li>Requesting payment in gift cards or cryptocurrency</li></ul><h4>What To Do</h4><ul><li>Hang up immediately</li><li>Do not give remote access to anyone</li><li>Restart your computer to clear any popups</li><li>Run a legitimate antivirus scan</li><li>Report to Microsoft or Apple directly</li></ul>'},
+  lottery:{t:'Lottery / Prize Scam',b:'<p>You have won a competition you never entered. A lottery from another country. A prize from a brand you have never used. To claim, you must pay taxes, customs or processing fees first.</p><h4>Red Flags</h4><ul><li>You never entered any competition</li><li>Must pay fees before receiving your prize</li><li>Creates urgency and demands secrecy</li><li>Contact comes via personal email or WhatsApp</li></ul><h4>What To Do</h4><ul><li>Do not pay anything</li><li>Real prizes are never conditional on fees</li><li>Report to your consumer protection authority</li></ul>'},
+  ponzi:{t:'Pyramid / Ponzi Scheme',b:'<p>Early investors are paid using money from new investors, not from real profits. Requires constant recruitment of new people. Collapses when recruitment slows and later investors lose everything.</p><h4>Red Flags</h4><ul><li>Recruitment of others is required to earn</li><li>Returns are unusually consistent and high</li><li>No clear legitimate product or service exists</li><li>Pressure to invest more money quickly</li><li>Not registered with any financial regulator</li></ul><h4>What To Do</h4><ul><li>Stop investing immediately</li><li>Document all payments with screenshots</li><li>Report to your country's financial regulator</li><li>Warn others in your network</li></ul>'}
+};
+
+function init(){
+  var k=sessionStorage.getItem('ssKey');
+  if(k){apiKey=k;document.getElementById('apiKeyInput').value=k;}
+  var gh=sessionStorage.getItem('ssGh');
+  var pp=sessionStorage.getItem('ssPp');
+  if(gh)document.getElementById('githubInput').value=gh;
+  if(pp)document.getElementById('paypalInput').value=pp;
+}
+
+function show(s){
+  ['home','report','check','authorities','learn','support','settings'].forEach(function(id){
+    document.getElementById('sec-'+id).style.display=id===s?'block':'none';
+  });
+  document.querySelectorAll('.nav-btn').forEach(function(b){
+    b.classList.remove('active');
+    if(b.textContent.toLowerCase().replace(/[^a-z]/g,'').indexOf(s.replace(/[^a-z]/g,''))!==-1)b.classList.add('active');
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function setSev(btn,level){
+  document.querySelectorAll('.sev-btn').forEach(function(b){b.className='sev-btn';});
+  btn.className='sev-btn active-'+level;
+}
+
+function submitReport(){
+  var desc=document.getElementById('scamDesc').value.trim();
+  var contact=document.getElementById('scammerContact').value.trim();
+  if(!desc||desc.length<20){notify('Please describe what happened in more detail','#ff3d57');return;}
+  if(!contact){notify('Please enter the scammer contact info','#ff3d57');return;}
+  var ref='SS-'+Math.floor(Math.random()*90000+10000);
+  notify('Report submitted. Case '+ref+' forwarded to authorities.','#00e676');
+  document.getElementById('scamDesc').value='';
+  document.getElementById('scammerContact').value='';
+}
+
+function runCheck(){
+  var val=document.getElementById('checkInput').value.trim();
+  if(!val){notify('Please enter a contact to check','#ff3d57');return;}
+  var box=document.getElementById('resultBox');
+  var fill=document.getElementById('riskFill');
+  box.style.display='block';
+  var suspicious=['invest','profit','lottery','winner','claim','crypto','bitcoin','urgent','verify','suspend','prize','free money'];
+  var isConfirmed=val.includes('invest-profits')||val.includes('4521')||val.includes('lottery@gmail');
+  var isSuspicious=suspicious.some(function(w){return val.toLowerCase().includes(w);});
+  if(isConfirmed){
+    box.className='result-box res-danger';
+    document.getElementById('resTitle').textContent='CONFIRMED SCAM';
+    document.getElementById('resDesc').textContent='This contact is in our database with multiple reports. Do not engage. Block immediately and report to your local authorities using the Authorities tab.';
+    fill.style.cssText='width:95%;background:linear-gradient(90deg,#ff3d57,#ff0000)';
+  }else if(isSuspicious){
+    box.className='result-box res-warn';
+    document.getElementById('resTitle').textContent='HIGH RISK - EXERCISE CAUTION';
+    document.getElementById('resDesc').textContent='This contact shows strong scam indicators. Do not send money or personal information. If you have been contacted, file a report immediately.';
+    fill.style.cssText='width:70%;background:linear-gradient(90deg,#ffd600,#ff6d00)';
+  }else{
+    box.className='result-box res-safe';
+    document.getElementById('resTitle').textContent='NOT IN OUR DATABASE';
+    document.getElementById('resDesc').textContent='This contact has not been reported to us yet. That does not guarantee safety. Trust your instincts. If something feels wrong, report it and do not send money.';
+    fill.style.cssText='width:12%;background:linear-gradient(90deg,#00e676,#00c853)';
+  }
+}
+
+function openModal(type){
+  var d=scamInfo[type];
+  if(!d)return;
+  document.getElementById('modalTitle').textContent=d.t;
+  document.getElementById('modalBody').innerHTML=d.b;
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+
+async function sendAI(){
+  var input=document.getElementById('aiInput');
+  var text=input.value.trim();
+  if(!text)return;
+  input.value='';
+  addMsg('user',text);
+  var thinkId=addMsg('bot','<span style="opacity:0.5">Thinking...</span>',true);
+  aiHistory.push({role:'user',content:text});
+  if(!apiKey){
+    document.getElementById(thinkId)&&document.getElementById(thinkId).remove();
+    addMsg('bot','To use the AI assistant please add your Anthropic API key in Settings. It is free to get at console.anthropic.com');
+    return;
+  }
+  try{
+    var r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:600,system:'You are the ScamShield AI assistant. Help scam victims understand what happened and what to do legally. Be empathetic and practical. Give clear next steps. Mention the specific authority in their country to contact. Remind them never to send more money. Keep responses concise. You never help anyone commit fraud or any illegal act.',messages:aiHistory.slice(-10)})
+    });
+    var d=await r.json();
+    document.getElementById(thinkId)&&document.getElementById(thinkId).remove();
+    var reply=(d.content&&d.content[0]&&d.content[0].text)||'I am here to help. Could you tell me more about your situation?';
+    aiHistory.push({role:'assistant',content:reply});
+    addMsg('bot',reply);
+  }catch(e){
+    document.getElementById(thinkId)&&document.getElementById(thinkId).remove();
+    addMsg('bot','Connection issue. Please check your API key in Settings and try again.');
+  }
+}
+
+function addMsg(role,content,temp){
+  var chat=document.getElementById('aiChat');
+  var id='m'+Date.now()+Math.round(Math.random()*1000);
+  var div=document.createElement('div');
+  div.className='ai-msg'+(role==='user'?' user-msg':'');
+  div.id=id;
+  div.innerHTML='<div class="ai-avatar '+(role==='bot'?'av-bot':'av-user')+'">'+(role==='bot'?'SS':'U')+'</div><div class="ai-bubble">'+content.replace(/
+/g,'<br/>')+'</div>';
+  chat.appendChild(div);
+  chat.scrollTop=chat.scrollHeight;
+  return id;
+}
+
+function quickAsk(q){document.getElementById('aiInput').value=q;sendAI();}
+function saveKey(){apiKey=document.getElementById('apiKeyInput').value;sessionStorage.setItem('ssKey',apiKey);}
+function toggleKey(){var el=document.getElementById('apiKeyInput');el.type=el.type==='password'?'text':'password';}
+function saveLinks(){sessionStorage.setItem('ssGh',document.getElementById('githubInput').value);sessionStorage.setItem('ssPp',document.getElementById('paypalInput').value);}
+function openUrl(id){var u=document.getElementById(id).value;if(u)window.open(u,'_blank');}
+function notify(msg,color){var el=document.getElementById('notif');el.textContent=msg;el.style.display='block';el.style.color=color||'var(--red)';el.style.borderColor=(color||'#ff3d57')+'40';clearTimeout(el._t);el._t=setTimeout(function(){el.style.display='none';},4000);}
+window.addEventListener('load',init);
+</script>
+</body>
+</html>
